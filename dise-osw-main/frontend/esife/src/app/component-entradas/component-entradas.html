@@ -1,0 +1,119 @@
+<div class="detalle">
+
+  <h1>{{ espectaculo.artista }}</h1>
+
+  <p>{{ espectaculo.fecha }}</p>
+  <p>{{ espectaculo.escenario }}</p>
+
+  <section class="cola-virtual">
+
+    <h2>Cola virtual</h2>
+
+    <p>
+      Para comprar entradas debes esperar tu turno.
+    </p>
+
+    <button *ngIf="!esperandoCola && !esTuTurno" (click)="unirseACola()" [disabled]="cargandoCola">
+      {{ cargandoCola ? 'Entrando...' : 'Unirme a la cola' }}
+    </button>
+
+    <div *ngIf="esperandoCola">
+
+      <p>
+        Personas delante:
+        <strong>{{ estadoCola?.personasDelante }}</strong>
+      </p>
+
+      <p>
+        Actualizando posición automáticamente...
+      </p>
+
+      <button (click)="salirDeCola()">
+        Salir de la cola
+      </button>
+
+    </div>
+
+    <div *ngIf="esTuTurno">
+
+      <p class="turno-ok">
+        <strong>Es tu turno.</strong> Ya puedes seleccionar entradas.
+      </p>
+
+      <p *ngIf="estadoCola?.segundosRestantesTurno">
+        Tiempo restante:
+        {{ estadoCola?.segundosRestantesTurno }} segundos
+      </p>
+
+      <button (click)="salirDeCola()">
+        Salir de la cola
+      </button>
+
+    </div>
+
+    <p *ngIf="mensajeCola">
+      {{ mensajeCola }}
+    </p>
+
+  </section>
+
+  <div *ngIf="entradas" class="info">
+
+    <p>Total: {{ entradas.total }}</p>
+    <p>Libres: {{ entradas.libres }}</p>
+    <p>Reservadas: {{ entradas.reservadas }}</p>
+    <p>Vendidas: {{ entradas.vendidas }}</p>
+
+  </div>
+
+  <div *ngIf="!esTuTurno" class="aviso-cola">
+    <p>
+      Las entradas se mostrarán cuando llegue tu turno.
+    </p>
+  </div>
+
+  <div *ngIf="esTuTurno">
+
+    <h2>Entradas disponibles</h2>
+
+    <div class="contenedor-entradas">
+
+      <div class="entrada-card" *ngFor="let e of entradasDisponibles">
+
+        <p>
+          <strong>Precio:</strong>
+          {{ (e.precio / 100).toFixed(2).replace('.', ',') }} €
+        </p>
+
+        <p *ngIf="e.tipoEntrada == 1">
+          🎭 {{ e.ubicacion }}
+        </p>
+
+        <p *ngIf="e.tipoEntrada == 0">
+          🎤 {{ e.ubicacion }}
+        </p>
+
+        <button [disabled]="e.estado == 'RESERVADA'" (click)="agregarAlCarrito(e)">
+          {{ e.estado == 'RESERVADA' ? 'Reservada' : '🛒 Añadir' }}
+        </button>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <form id="payment-form" style="display:none">
+
+    <div id="card-element"></div>
+
+    <button id="submit">
+      <span id="button-text">Pagar ahora</span>
+    </button>
+
+    <p id="card-error" role="alert"></p>
+
+  </form>
+
+</div>

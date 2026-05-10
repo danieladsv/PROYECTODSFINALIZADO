@@ -1,0 +1,5 @@
+escribo en la terminal ng new esife
+
+ng generate component espectáculos
+
+ng generate service espectaculos

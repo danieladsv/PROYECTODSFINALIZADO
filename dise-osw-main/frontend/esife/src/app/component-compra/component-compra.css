@@ -1,0 +1,55 @@
+.compra {
+  margin: 1rem;
+  padding: 1rem;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+}
+
+.cola-demo {
+  margin: 1rem;
+  padding: 1rem;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background: #f8fbff;
+}
+
+.cola-nota {
+  margin-top: 0;
+  color: #444;
+}
+
+.cola-resumen {
+  display: grid;
+  gap: 0.35rem;
+  margin: 1rem 0;
+}
+
+.cola-botones {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.cola-botones button {
+  padding: 0.6rem 1rem;
+  border: 0;
+  border-radius: 6px;
+  background: #0b57d0;
+  color: white;
+  cursor: pointer;
+}
+
+.cola-estado {
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #0b57d0;
+}
+
+.cola-estado-alerta {
+  color: #b42318;
+}
+
+.cola-mensaje {
+  margin-top: 0.75rem;
+  color: #0b57d0;
+}

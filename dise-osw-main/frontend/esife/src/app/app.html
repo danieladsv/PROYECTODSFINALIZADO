@@ -1,0 +1,267 @@
+<header class="header">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+
+    <!-- LOGO -->
+    <span class="logo">
+      🎟️ Esientradas
+    </span>
+
+    <!-- CARRITO -->
+    <div class="carrito-icono" (click)="abrirCarrito()">
+
+      🛒
+
+      <span class="contador-carrito">
+        {{ (carritoService.carrito$ | async)?.length || 0 }}
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- BUSCADOR -->
+  <div class="search-bar">
+
+    <input type="date" name="fecha" [(ngModel)]="fecha">
+
+    <input type="text" name="busqueda" placeholder="Artista, Evento o Recinto" [(ngModel)]="busqueda">
+
+    <button (click)="buscar()">
+      Buscar
+    </button>
+
+  </div>
+
+</header>
+
+<!-- MODAL CARRITO -->
+<div class="modal" *ngIf="mostrarCarrito">
+
+  <div class="carrito-moderno">
+
+    <!-- CERRAR -->
+    <span class="cerrar" (click)="cerrarCarrito()">
+      ✖
+    </span>
+
+    <!-- TÍTULO -->
+    <h2 class="titulo-carrito">
+      🛒 Tu carrito
+    </h2>
+
+    <!-- ENTRADAS -->
+    <div class="entrada-carrito" *ngFor="let e of carritoService.carrito$ | async">
+
+      <div class="entrada-info">
+
+        <h4>
+          {{ e.artista }}
+        </h4>
+
+        <p>
+          📍 {{ e.ubicacion || e.zona || 'Zona' }}
+        </p>
+
+      </div>
+
+      <div class="entrada-precio">
+        {{ e.precio / 100 }}€
+      </div>
+
+    </div>
+
+    <!-- TOTAL -->
+    <div class="total-carrito">
+
+      <span>Total:</span>
+
+      <strong>
+        {{
+          (
+            (carritoService.carrito$ | async)?.reduce(
+              (acc, e) => acc + (e.precio / 100),
+              0
+            ) || 0
+          )
+        }}€
+      </strong>
+
+    </div>
+
+    <hr>
+
+    <!-- LOGIN -->
+    <h3 class="subtitulo">
+      🔐 Login
+    </h3>
+
+    <input class="input-moderno" type="text" name="usuario" placeholder="Usuario" [(ngModel)]="usuario">
+
+    <input class="input-moderno" type="password" name="password" placeholder="Contraseña" [(ngModel)]="password">
+
+    <!-- BOTONES LOGIN -->
+    <div class="botones-login">
+
+      <button class="btn-azul" (click)="login()">
+        Iniciar sesión
+      </button>
+
+      <button class="btn-gris" (click)="logout()">
+        Cerrar sesión
+      </button>
+
+    </div>
+
+    <!-- RECUPERAR CONTRASEÑA -->
+    <button class="btn-link-recuperar" (click)="abrirRecuperarPassword()">
+      ¿Has olvidado tu contraseña?
+    </button>
+
+    <hr>
+
+    <!-- REGISTRO -->
+    <button class="btn-registro" (click)="abrirRegistro()">
+      Crear cuenta
+    </button>
+
+    <hr>
+
+    <!-- PAGAR -->
+    <button class="btn-pagar" (click)="pagarCarrito()">
+      💳 Pagar carrito
+    </button>
+
+    <!-- STRIPE -->
+    <form id="payment-form" style="display:none" (submit)="confirmarPago(); $event.preventDefault()">
+
+      <h3 class="stripe-title">
+        Payment Details
+      </h3>
+
+      <div class="stripe-card-box">
+        <div id="card-element"></div>
+      </div>
+
+      <p id="card-error"></p>
+
+      <div class="stripe-buttons">
+
+        <button id="submit" type="submit" class="btn-confirmar">
+          CONFIRM AND PAY
+        </button>
+
+        <button type="button" class="btn-cancelar" (click)="clientSecret=''">
+          CANCEL
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<!-- MODAL REGISTRO -->
+<div class="modal" *ngIf="mostrarRegistro">
+
+  <div class="carrito-moderno">
+
+    <!-- CERRAR -->
+    <span class="cerrar" (click)="cerrarRegistro()">
+      ✖
+    </span>
+
+    <h2 class="titulo-carrito">
+      🆕 Registro
+    </h2>
+
+    <!-- NOMBRE -->
+    <input class="input-moderno" type="text" name="registroNombre" placeholder="Nombre" [(ngModel)]="registroNombre">
+
+    <!-- EMAIL -->
+    <input class="input-moderno" type="email" name="registroEmail" placeholder="Correo electrónico"
+      [(ngModel)]="registroEmail">
+
+    <!-- CONTRASEÑA -->
+    <input class="input-moderno" type="password" name="registroPwd1" placeholder="Contraseña"
+      [(ngModel)]="registroPwd1">
+
+    <!-- REPETIR CONTRASEÑA -->
+    <input class="input-moderno" type="password" name="registroPwd2" placeholder="Repetir contraseña"
+      [(ngModel)]="registroPwd2">
+
+    <div *ngIf="registroError" class="mensaje-error-registro">
+      ⚠️ {{ registroError }}
+    </div>
+
+    <div *ngIf="registroOk" class="mensaje-ok-registro">
+      ✅ {{ registroOk }}
+    </div>
+
+    <button class="btn-pagar" (click)="registrar()">
+      Crear cuenta
+    </button>
+
+  </div>
+
+</div>
+
+<!-- MODAL RECUPERAR CONTRASEÑA -->
+<div class="modal-fondo-recuperar" *ngIf="mostrarRecuperarPassword">
+
+  <div class="modal-recuperar">
+
+    <button class="btn-cerrar-recuperar" (click)="cerrarRecuperarPassword()">
+      ✖
+    </button>
+
+    <div class="recuperar-icono">
+      🔐
+    </div>
+
+    <h2>
+      Recuperar contraseña
+    </h2>
+
+    <p class="recuperar-texto">
+      Introduce tu correo electrónico. Si existe una cuenta asociada,
+      recibirás un enlace para cambiar tu contraseña.
+    </p>
+
+    <input class="input-recuperar" type="email" name="recuperarEmail" placeholder="Correo electrónico"
+      [(ngModel)]="recuperarEmail">
+
+    <div *ngIf="recuperarError" class="mensaje-error-recuperar">
+      ⚠️ {{ recuperarError }}
+    </div>
+
+    <div *ngIf="recuperarMensaje" class="mensaje-ok-recuperar">
+      ✅ {{ recuperarMensaje }}
+    </div>
+
+    <button class="btn-enviar-recuperar" (click)="solicitarRecuperacionPassword()">
+      Enviar enlace de recuperación
+    </button>
+
+    <button class="btn-volver-login" (click)="cerrarRecuperarPassword(); abrirCarrito()">
+      Volver al login
+    </button>
+
+  </div>
+
+</div>
+
+<!-- RUTAS -->
+<router-outlet></router-outlet>
+
+<!-- FOOTER -->
+<footer class="footer">
+
+  <p>
+    &copy; 2024 Espectáculos Inc.
+  </p>
+
+</footer>

@@ -1,0 +1,60 @@
+<h2 class="titulo">Resultados</h2>
+
+<div class="contenedor-cards" *ngIf="hayBusqueda; else vistaInicio">
+
+  <div class="card" *ngFor="let e of espectaculosFiltrados">
+
+    <div class="card-info">
+      <h3>{{e.artista}}</h3>
+      <p class="fecha">{{e.fecha}}</p>
+      <p class="escenario">{{e.escenario}}</p>
+    </div>
+
+    <div class="card-acciones">
+
+      <button (click)="verEntradas(e)">
+        Ver entradas
+      </button>
+
+      <div *ngIf="e.entradas" class="info-entradas">
+        <p>
+          {{e.entradasLibres}} libres de {{e.entradas.total}}
+        </p>
+
+        <button class="btn-compra" (click)="irAComprarEntradas()">
+          Comprar
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<ng-template #vistaInicio>
+  <h2 class="titulo">Escenarios</h2>
+
+  <div class="contenedor-cards">
+    <div class="card" *ngFor="let e of escenarios">
+      <div class="card-info">
+        <h3>{{ e.nombre || e.escenario || e.nombreEscenario || 'Escenario' }}</h3>
+        <p class="escenario">{{ e.ubicacion || e.lugar || e.direccion || '' }}</p>
+      </div>
+
+      <div class="card-acciones">
+        <button (click)="getEspectaculos(e)">
+          {{ escenarioExpandidoId === e.id ? 'Ocultar espectáculos' : 'Ver espectáculos' }}
+        </button>
+
+        <div class="lista-espectaculos" *ngIf="escenarioExpandidoId === e.id && e.espectaculos?.length">
+          <div class="espectaculo-item" *ngFor="let esp of e.espectaculos">
+            <h4>{{ esp.artista }}</h4>
+            <p>{{ esp.fecha }}</p>
+            <button (click)="verEntradas(esp)">Ver entradas</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
